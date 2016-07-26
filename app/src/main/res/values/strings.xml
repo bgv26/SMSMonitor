@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">SMS Monitor</string>
+
+    <string name="no_sms">Ни одной смски</string>
+</resources>
