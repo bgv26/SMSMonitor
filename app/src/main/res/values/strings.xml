@@ -2,4 +2,6 @@
     <string name="app_name">SMS Monitor</string>
 
     <string name="no_sms">Ни одной смски</string>
+    <string name="widget_name">My first widget</string>
+    <string name="widget_text">Text in widget</string>
 </resources>
