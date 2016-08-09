@@ -3,7 +3,9 @@ package com.brizhakgerman.smsmonitor;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
+import android.widget.RemoteViews;
 
 import java.util.Arrays;
 
@@ -13,6 +15,9 @@ public class MyWidget extends AppWidgetProvider {
     @Override
     public void onEnabled(Context context) {
         super.onEnabled(context);
+//        SharedPreferences sp = context.getSharedPreferences("widget_pref", Context.MODE_PRIVATE);
+//        SharedPreferences.Editor editor = sp.edit();
+//        editor.putInt("widget_id", )
         Log.d(LOG_TAG, "onEnabled");
     }
 
@@ -32,5 +37,13 @@ public class MyWidget extends AppWidgetProvider {
     public void onDisabled(Context context) {
         super.onDisabled(context);
         Log.d(LOG_TAG, "onDisabled");
+    }
+
+    static void updateWidget(Context context,AppWidgetManager appWidgetManager,
+                             SharedPreferences sp, int appWidgetId, String text) {
+        RemoteViews widgetView = new RemoteViews(context.getPackageName(),
+                R.layout.widget);
+        widgetView.setTextViewText(R.id.textView, text);
+        appWidgetManager.updateAppWidget(appWidgetId, widgetView);
     }
 }

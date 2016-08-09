@@ -4,10 +4,8 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.ContentResolver;
-import android.content.ContentValues;
-import android.content.Context;
-import android.content.Intent;
+import android.appwidget.AppWidgetManager;
+import android.content.*;
 import android.os.IBinder;
 import android.provider.CalendarContract.Events;
 import android.support.annotation.Nullable;
@@ -44,10 +42,17 @@ public class SmsService extends Service {
         notificationManager.notify(R.mipmap.ic_launcher, notification);
     }
 
+    private void updateWidget(String text) {
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
+        int ids[] = appWidgetManager.getAppWidgetIds(new ComponentName(this, MyWidget.class));
+        MyWidget.updateWidget(this, appWidgetManager, null, ids[0], text);
+    }
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         String sms_body = intent.getExtras().getString("sms_body");
-        showNotification(sms_body);
+//        showNotification(sms_body);
+        updateWidget(sms_body);
         saveSms(sms_body);
 
         SmsData event = processSms(sms_body);
