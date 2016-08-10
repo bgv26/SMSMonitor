@@ -39,11 +39,14 @@ public class MyWidget extends AppWidgetProvider {
         Log.d(LOG_TAG, "onDisabled");
     }
 
-    static void updateWidget(Context context,AppWidgetManager appWidgetManager,
-                             SharedPreferences sp, int appWidgetId, String text) {
+    static void updateWidget(Context context, AppWidgetManager appWidgetManager,
+                             SharedPreferences sp, int appWidgetId, SmsData data) {
         RemoteViews widgetView = new RemoteViews(context.getPackageName(),
                 R.layout.widget);
-        widgetView.setTextViewText(R.id.textView, text);
+
+        widgetView.setTextViewText(R.id.tvCardNumber, "VISA" + data.cardNumber);
+        widgetView.setTextViewText(R.id.tvBalance, String.valueOf(data.balance));
+        widgetView.setTextViewText(R.id.tvLastOperation, data.date + " " + data.time + " " + data.amount);
         appWidgetManager.updateAppWidget(appWidgetId, widgetView);
     }
 }

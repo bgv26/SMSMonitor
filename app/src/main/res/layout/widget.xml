@@ -1,17 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="#6600ff00">
 
     <TextView
-            android:id="@+id/textView"
+            android:id="@+id/tvCardNumber"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#6600ff00"
-            android:gravity="center"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="start"/>
+
+    <TextView
+            android:id="@+id/tvBalance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:gravity="center_horizontal"
             android:text="@string/widget_text"
             android:textColor="#000"
             android:textSize="18sp"/>
+    <TextView
+            android:id="@+id/tvLastOperation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="end"/>
 
-</RelativeLayout>
+</LinearLayout>

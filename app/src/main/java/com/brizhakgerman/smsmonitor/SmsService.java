@@ -5,22 +5,18 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.appwidget.AppWidgetManager;
-import android.content.*;
+import android.content.ComponentName;
+import android.content.ContentValues;
+import android.content.Context;
+import android.content.Intent;
 import android.os.IBinder;
-import android.provider.CalendarContract.Events;
 import android.support.annotation.Nullable;
 
-import java.util.Calendar;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class SmsService extends Service {
-    private class SmsData {
-        public int hh;
-        public int mm;
-        public String description;
-    }
 
     @Nullable
     @Override
@@ -32,7 +28,7 @@ public class SmsService extends Service {
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), 0);
         Context context = getApplicationContext();
         Notification.Builder builder = new Notification.Builder(context)
-                .setContentTitle("Регбол")
+                .setContentTitle("Сбербанк")
                 .setContentText(text)
                 .setContentIntent(contentIntent)
                 .setSmallIcon(R.mipmap.ic_launcher)
@@ -42,22 +38,21 @@ public class SmsService extends Service {
         notificationManager.notify(R.mipmap.ic_launcher, notification);
     }
 
-    private void updateWidget(String text) {
+    private void updateWidget(SmsData data) {
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
         int ids[] = appWidgetManager.getAppWidgetIds(new ComponentName(this, MyWidget.class));
-        MyWidget.updateWidget(this, appWidgetManager, null, ids[0], text);
+        MyWidget.updateWidget(this, appWidgetManager, null, ids[0], data);
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         String sms_body = intent.getExtras().getString("sms_body");
-//        showNotification(sms_body);
-        updateWidget(sms_body);
+        showNotification(sms_body);
         saveSms(sms_body);
 
         SmsData event = processSms(sms_body);
         if (event != null) {
-            addEvent(event.hh, event.mm, event.description);
+            updateWidget(event);
         }
 
         return START_STICKY;
@@ -75,42 +70,21 @@ public class SmsService extends Service {
     }
 
     private SmsData processSms(String sms_body) {
-        Pattern pattern = Pattern.compile("Регбол! Сегодня в (\\d+)-(\\d+). (.+)");
-        if (pattern.matcher(sms_body).matches()) {
-            Matcher matcher = pattern.matcher(sms_body);
-            matcher.find();
+        Pattern pattern = Pattern.compile(getResources().getText(R.string.sms_pattern).toString());
+//        if (pattern.matcher(sms_body).matches()) {
+        Matcher matcher = pattern.matcher(sms_body);
+        if (matcher.matches()) {
             SmsData data = new SmsData();
-            data.hh = Integer.parseInt(matcher.group(1));
-            data.mm = Integer.parseInt(matcher.group(2));
-            data.description = matcher.group(3);
+            data.cardNumber = Integer.parseInt(matcher.group(1));
+            data.date = matcher.group(2);
+            data.time = matcher.group(3);
+            if (matcher.group(4).equals("зачисление"))
+                data.amount = Float.parseFloat(matcher.group(5));
+            else if (matcher.group(4).equals("списание"))
+                data.amount = -Float.parseFloat(matcher.group(5));
+            data.balance = Float.parseFloat(matcher.group(6));
             return data;
         }
         return null;
-    }
-
-    private void addEvent(int hh, int mm, String description) {
-        long calId = 1;
-        long startMillis = 0;
-        long endMillis = 0;
-
-        Calendar beginTime = Calendar.getInstance();
-        beginTime.set(Calendar.HOUR_OF_DAY, hh);
-        beginTime.set(Calendar.MINUTE, mm);
-        startMillis = beginTime.getTimeInMillis();
-
-        Calendar endTime = Calendar.getInstance();
-        endTime.set(Calendar.HOUR_OF_DAY, hh + 2);
-        endTime.set(Calendar.MINUTE, mm);
-        endMillis = endTime.getTimeInMillis();
-
-        ContentResolver cr = getContentResolver();
-        ContentValues values = new ContentValues();
-        values.put(Events.DTSTART, startMillis);
-        values.put(Events.DTEND, endMillis);
-        values.put(Events.TITLE, "Rugball");
-        values.put(Events.DESCRIPTION, description);
-        values.put(Events.CALENDAR_ID, calId);
-        values.put(Events.EVENT_TIMEZONE, "Asia/Yekaterinburg");
-        cr.insert(Events.CONTENT_URI, values);
     }
 }

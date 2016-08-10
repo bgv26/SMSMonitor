@@ -2,6 +2,7 @@
     <string name="app_name">SMS Monitor</string>
 
     <string name="no_sms">Ни одной смски</string>
-    <string name="widget_name">My first widget</string>
-    <string name="widget_text">Text in widget</string>
+    <string name="widget_name">SMS Monitor widget</string>
+    <string name="widget_text">0.00</string>
+    <string name="sms_pattern">VISA(\\d{4}) (\\d{2}\\.\\d{2}\\.\\d{2}) (\\d{2}:\\d{2}) (зачисление|списание) ([.\\d]+)р.*Баланс: ([.\\d]+)р</string>
 </resources>
