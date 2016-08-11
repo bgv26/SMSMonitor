@@ -2,8 +2,7 @@ package com.brizhakgerman.smsmonitor;
 
 class SmsData {
     int cardNumber;
-    String date;
-    String time;
+    String datetime;
     float amount;
     float balance;
 }

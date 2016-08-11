@@ -24,28 +24,32 @@
                 android:authorities="com.brizhakgerman.smsmonitor">
         </provider>
 
-        <service android:name="SmsService" />
+        <service android:name=".SmsService"/>
 
         <receiver android:name=".SmsMonitor">
             <intent-filter android:priority="100">
                 <action android:name="android.provider.Telephony.SMS_RECEIVED"/>
             </intent-filter>
         </receiver>
-
         <receiver
                 android:name=".MyWidget"
                 android:icon="@android:drawable/star_big_on"
                 android:label="@string/widget_name">
             <intent-filter>
-                <action
-                        android:name="android.appwidget.action.APPWIDGET_UPDATE">
-                </action>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
             </intent-filter>
+
             <meta-data
                     android:name="android.appwidget.provider"
                     android:resource="@xml/widget_metadata">
             </meta-data>
         </receiver>
+
+        <activity android:name=".ConfigActivity">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

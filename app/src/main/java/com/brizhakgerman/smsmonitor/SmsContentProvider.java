@@ -1,17 +1,18 @@
 package com.brizhakgerman.smsmonitor;
 
 import android.content.ContentProvider;
-import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 
 import java.util.Arrays;
 import java.util.HashSet;
 
+@SuppressWarnings("ConstantConditions")
 public class SmsContentProvider extends ContentProvider {
     private SmsDatabaseHelper database;
 
@@ -21,8 +22,7 @@ public class SmsContentProvider extends ContentProvider {
     private static final String AUTHORITY = "com.brizhakgerman.smsmonitor";
 
     private static final String BASE_PATH = "sms";
-    public static final Uri CONTENT_URI = Uri.parse("content://"
-            + AUTHORITY + "/" + BASE_PATH);
+    static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + BASE_PATH);
 
     private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
@@ -38,7 +38,7 @@ public class SmsContentProvider extends ContentProvider {
     }
 
     @Override
-    public Cursor query(Uri uri, String[] projection, String selection,
+    public Cursor query(@NonNull Uri uri, String[] projection, String selection,
                         String[] selectionArgs, String sortOrder) {
         SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
 
@@ -66,15 +66,15 @@ public class SmsContentProvider extends ContentProvider {
     }
 
     @Override
-    public String getType(Uri uri) {
+    public String getType(@NonNull Uri uri) {
         return null;
     }
 
     @Override
-    public Uri insert(Uri uri, ContentValues values) {
+    public Uri insert(@NonNull Uri uri, ContentValues values) {
         int uriType = sURIMatcher.match(uri);
         SQLiteDatabase sqlDB = database.getWritableDatabase();
-        long id = 0;
+        long id;
         switch (uriType) {
             case MESSAGES:
                 id = sqlDB.insert(SmsTable.TABLE_SMS, null, values);
@@ -87,13 +87,13 @@ public class SmsContentProvider extends ContentProvider {
     }
 
     @Override
-    public int delete(Uri uri, String selection, String[] selectionArgs) {
+    public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
         // в рамках данной статьи этот метод не пригодится...
         return 0;
     }
 
     @Override
-    public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+    public int update(@NonNull Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         // ...и этот тоже
         return 0;
     }

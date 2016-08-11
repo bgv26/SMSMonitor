@@ -5,10 +5,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.appwidget.AppWidgetManager;
-import android.content.ComponentName;
-import android.content.ContentValues;
-import android.content.Context;
-import android.content.Intent;
+import android.content.*;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
@@ -28,7 +25,7 @@ public class SmsService extends Service {
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), 0);
         Context context = getApplicationContext();
         Notification.Builder builder = new Notification.Builder(context)
-                .setContentTitle("Сбербанк")
+                .setContentTitle(getString(R.string.notification_title))
                 .setContentText(text)
                 .setContentIntent(contentIntent)
                 .setSmallIcon(R.mipmap.ic_launcher)
@@ -40,13 +37,15 @@ public class SmsService extends Service {
 
     private void updateWidget(SmsData data) {
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
-        int ids[] = appWidgetManager.getAppWidgetIds(new ComponentName(this, MyWidget.class));
-        MyWidget.updateWidget(this, appWidgetManager, null, ids[0], data);
+        SharedPreferences sp = getSharedPreferences(ConfigActivity.WIDGET_PREF, MODE_PRIVATE);
+        int widgetID = sp.getInt(String.valueOf(data.cardNumber), 0);
+        if (widgetID != 0)
+            MyWidget.updateWidget(this, appWidgetManager, widgetID, data);
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        String sms_body = intent.getExtras().getString("sms_body");
+        String sms_body = intent.getExtras().getString(SmsMonitor.SMS_BODY);
         showNotification(sms_body);
         saveSms(sms_body);
 
@@ -70,19 +69,17 @@ public class SmsService extends Service {
     }
 
     private SmsData processSms(String sms_body) {
-        Pattern pattern = Pattern.compile(getResources().getText(R.string.sms_pattern).toString());
-//        if (pattern.matcher(sms_body).matches()) {
+        Pattern pattern = Pattern.compile(getString(R.string.sms_pattern));
         Matcher matcher = pattern.matcher(sms_body);
         if (matcher.matches()) {
             SmsData data = new SmsData();
             data.cardNumber = Integer.parseInt(matcher.group(1));
-            data.date = matcher.group(2);
-            data.time = matcher.group(3);
-            if (matcher.group(4).equals("зачисление"))
-                data.amount = Float.parseFloat(matcher.group(5));
-            else if (matcher.group(4).equals("списание"))
-                data.amount = -Float.parseFloat(matcher.group(5));
-            data.balance = Float.parseFloat(matcher.group(6));
+            data.datetime = matcher.group(2);
+            if (matcher.group(3).equals(getString(R.string.oper_plus)))
+                data.amount = Float.parseFloat(matcher.group(4));
+            else if (matcher.group(3).equals(getString(R.string.oper_minus)))
+                data.amount = -Float.parseFloat(matcher.group(4));
+            data.balance = Float.parseFloat(matcher.group(5));
             return data;
         }
         return null;

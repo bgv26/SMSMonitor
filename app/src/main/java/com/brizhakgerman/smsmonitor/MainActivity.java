@@ -2,6 +2,7 @@ package com.brizhakgerman.smsmonitor;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import android.app.AlertDialog;
 import android.app.ListActivity;
@@ -25,7 +26,6 @@ public class MainActivity extends ListActivity implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sms_list);
-//		this.getListView().setDividerHeight(2);
         fillData();
     }
 
@@ -42,7 +42,7 @@ public class MainActivity extends ListActivity implements
             public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
                 if (columnIndex == cursor.getColumnIndex(SmsTable.COLUMN_DATE)) {
                     Date d = new Date(cursor.getLong(columnIndex));
-                    String formatted = new SimpleDateFormat("dd.MM.yy HH:mm").format(d);
+                    String formatted = new SimpleDateFormat("dd.MM.yy HH:mm", Locale.getDefault()).format(d);
                     ((TextView) view).setText(formatted);
                     return true;
                 }
@@ -78,9 +78,8 @@ public class MainActivity extends ListActivity implements
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         String[] projection = {SmsTable.COLUMN_ID, SmsTable.COLUMN_DATE, SmsTable.COLUMN_TEXT};
-        CursorLoader cursorLoader = new CursorLoader(this, SmsContentProvider.CONTENT_URI,
+        return new CursorLoader(this, SmsContentProvider.CONTENT_URI,
                 projection, null, null, "-" + SmsTable.COLUMN_DATE);
-        return cursorLoader;
     }
 
     @Override

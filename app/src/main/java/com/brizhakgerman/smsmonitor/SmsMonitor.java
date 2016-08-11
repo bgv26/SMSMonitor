@@ -6,29 +6,32 @@ import android.content.Intent;
 import android.telephony.SmsMessage;
 
 public class SmsMonitor extends BroadcastReceiver {
-    private static final String ACTION = "android.provider.Telephony.SMS_RECEIVED";
+    private final static String ACTION = "android.provider.Telephony.SMS_RECEIVED";
+    final static String SMS_BODY = "sms_body";
 
     @Override
     public void onReceive(Context context, Intent intent) {
         if (intent != null && intent.getAction() != null
-                && ACTION.equalsIgnoreCase(intent.getAction())) {
+                && intent.getAction().equalsIgnoreCase(ACTION)) {
             Object[] pduArray = (Object[]) intent.getExtras().get("pdus");
-            SmsMessage[] messages = new SmsMessage[pduArray.length];
-            for (int i = 0; i < pduArray.length; i++) {
-                messages[i] = SmsMessage.createFromPdu((byte[]) pduArray[i]);
-            }
-            String sms_from = messages[0].getDisplayOriginatingAddress();
-            if (sms_from.equalsIgnoreCase("900")) {
-                StringBuilder bodyText = new StringBuilder();
-                for (int i = 0; i < messages.length; i++) {
-                    bodyText.append(messages[i].getMessageBody());
+            if (pduArray != null && pduArray.length > 0) {
+                SmsMessage[] messages = new SmsMessage[pduArray.length];
+                for (int i = 0; i < pduArray.length; i++) {
+                    messages[i] = SmsMessage.createFromPdu((byte[]) pduArray[i]);
                 }
-                String body = bodyText.toString();
-                Intent mIntent = new Intent(context, SmsService.class);
-                mIntent.putExtra("sms_body", body);
-                context.startService(mIntent);
+                String sms_from = messages[0].getDisplayOriginatingAddress();
+                if (sms_from.equalsIgnoreCase(context.getString(R.string.sms_from))) {
+                    StringBuilder bodyText = new StringBuilder();
+                    for (SmsMessage message : messages) {
+                        bodyText.append(message.getMessageBody());
+                    }
+                    String body = bodyText.toString();
+                    Intent mIntent = new Intent(context, SmsService.class);
+                    mIntent.putExtra(SMS_BODY, body);
+                    context.startService(mIntent);
 
-                abortBroadcast();
+                    abortBroadcast();
+                }
             }
         }
 
