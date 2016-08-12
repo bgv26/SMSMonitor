@@ -2,6 +2,7 @@ package com.brizhakgerman.smsmonitor;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -12,7 +13,7 @@ import android.support.annotation.NonNull;
 import java.util.Arrays;
 import java.util.HashSet;
 
-@SuppressWarnings("ConstantConditions")
+
 public class SmsContentProvider extends ContentProvider {
     private SmsDatabaseHelper database;
 
@@ -60,7 +61,10 @@ public class SmsContentProvider extends ContentProvider {
 
         SQLiteDatabase db = database.getWritableDatabase();
         Cursor cursor = queryBuilder.query(db, projection, selection, selectionArgs, null, null, sortOrder);
-        cursor.setNotificationUri(getContext().getContentResolver(), uri);
+        Context context = getContext();
+        if (context != null) {
+            cursor.setNotificationUri(context.getContentResolver(), uri);
+        }
 
         return cursor;
     }
@@ -82,7 +86,10 @@ public class SmsContentProvider extends ContentProvider {
             default:
                 throw new IllegalArgumentException("Unknown URI: " + uri);
         }
-        getContext().getContentResolver().notifyChange(uri, null);
+        Context context = getContext();
+        if (context != null) {
+            context.getContentResolver().notifyChange(uri, null);
+        }
         return Uri.parse(BASE_PATH + "/" + id);
     }
 

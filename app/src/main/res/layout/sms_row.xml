@@ -12,15 +12,13 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:lines="1"
-            android:scrollHorizontally="true"
-            android:text="trMessage. this is very long message. it must be ellipsed." />
+            android:scrollHorizontally="true" />
 
     <TextView
             android:id="@+id/smsDate"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="trDate"
-            android:textSize="12dp"
+            android:textSize="12sp"
             android:textStyle="italic" />
 
 </LinearLayout>

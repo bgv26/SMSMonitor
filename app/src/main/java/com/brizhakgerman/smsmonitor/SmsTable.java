@@ -2,27 +2,31 @@ package com.brizhakgerman.smsmonitor;
 
 import android.database.sqlite.SQLiteDatabase;
 
-public class SmsTable {
-    public static final String TABLE_SMS = "sms";
-    public static final String COLUMN_ID = "_id";
-    public static final String COLUMN_DATE = "date";
-    public static final String COLUMN_TEXT = "text";
+class SmsTable {
+    static final String TABLE_SMS = "sms";
+    static final String COLUMN_ID = "_id";
+    static final String COLUMN_DATE = "date";
+    static final String COLUMN_TEXT = "text";
 
-    private static final String DATABASE_CREATE = "create table "
+    private static final String DATABASE_CREATE = "CREATE TABLE "
             + TABLE_SMS
             + "("
-            + COLUMN_ID + " integer primary key autoincrement, "
-            + COLUMN_DATE + " integer not null, "
-            + COLUMN_TEXT + " text not null"
+            + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + COLUMN_DATE + " INTEGER NOT NULL, "
+            + COLUMN_TEXT + " TEXT NOT NULL"
             + ");";
 
-    public static void onCreate(SQLiteDatabase database) {
+    private static final String DATABASE_DROP = "DROP TABLE IF EXISTS "
+            + TABLE_SMS + ";";
+
+    static void onCreate(SQLiteDatabase database) {
         database.execSQL(DATABASE_CREATE);
     }
 
-    public static void onUpgrade(SQLiteDatabase database, int oldVersion,
-                                 int newVersion) {
-        database.execSQL("DROP TABLE IF EXISTS " + TABLE_SMS);
-        onCreate(database);
+    static void onUpgrade(SQLiteDatabase database, int oldVersion, int newVersion) {
+        if (oldVersion != newVersion) {
+            database.execSQL(DATABASE_DROP);
+            onCreate(database);
+        }
     }
 }

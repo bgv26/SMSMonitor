@@ -9,7 +9,6 @@ import android.view.View;
 import android.widget.EditText;
 
 public class ConfigActivity extends Activity {
-    final static String WIDGET_PREF = "widget_pref";
 
     private int widgetID = AppWidgetManager.INVALID_APPWIDGET_ID;
     private Intent resultValue;
@@ -38,15 +37,15 @@ public class ConfigActivity extends Activity {
         EditText etCardNumber = (EditText) findViewById(R.id.etCardNumber);
         String sCardNumber = etCardNumber.getText().toString();
 
-        SharedPreferences sp = getSharedPreferences(WIDGET_PREF, MODE_PRIVATE);
-        SharedPreferences.Editor editor = sp.edit();
-        editor.putInt(sCardNumber, widgetID);
-        editor.commit();
+        SharedPreferences sharedPreferences = getSharedPreferences(MyWidget.WIDGET_PREF, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt(MyWidget.WIDGET_CARD_NUMBER_TEXT + widgetID, Integer.parseInt(sCardNumber));
+        editor.apply();
 
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
-        SmsData data = new SmsData();
+        SmsService.SmsData data = new SmsService.SmsData();
         data.cardNumber = Integer.parseInt(sCardNumber);
-        MyWidget.updateWidget(this, appWidgetManager, widgetID, data);
+        MyWidget.updateWidget(this, appWidgetManager, sharedPreferences, widgetID);
 
         setResult(RESULT_OK, resultValue);
         finish();

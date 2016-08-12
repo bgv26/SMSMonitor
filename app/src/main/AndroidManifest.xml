@@ -17,16 +17,28 @@
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="http"
+                      android:host="www.brizhakgerman.com"
+                      android:pathPrefix="/smsmonitor"/>
+            </intent-filter>
         </activity>
 
         <provider
                 android:name=".SmsContentProvider"
+                android:exported="false"
                 android:authorities="com.brizhakgerman.smsmonitor">
         </provider>
 
         <service android:name=".SmsService"/>
 
-        <receiver android:name=".SmsMonitor">
+        <receiver
+                android:name=".SmsMonitor"
+                android:permission="android.permission.BROADCAST_SMS">
             <intent-filter android:priority="100">
                 <action android:name="android.provider.Telephony.SMS_RECEIVED"/>
             </intent-filter>

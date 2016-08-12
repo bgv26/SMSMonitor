@@ -15,6 +15,9 @@ import java.util.regex.Pattern;
 
 public class SmsService extends Service {
 
+    private AppWidgetManager appWidgetManager;
+    private SharedPreferences sharedPreference;
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -36,11 +39,32 @@ public class SmsService extends Service {
     }
 
     private void updateWidget(SmsData data) {
-        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
-        SharedPreferences sp = getSharedPreferences(ConfigActivity.WIDGET_PREF, MODE_PRIVATE);
-        int widgetID = sp.getInt(String.valueOf(data.cardNumber), 0);
-        if (widgetID != 0)
-            MyWidget.updateWidget(this, appWidgetManager, widgetID, data);
+        appWidgetManager = AppWidgetManager.getInstance(this);
+        sharedPreference = getSharedPreferences(MyWidget.WIDGET_PREF, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreference.edit();
+        int widgetID = findWidgetIDbyCardNumber(data.cardNumber);
+        if (widgetID != 0) {
+            editor.putString(MyWidget.WIDGET_BALANCE_TEXT + widgetID,
+                    data.balance + "р");
+            editor.putString(MyWidget.WIDGET_LAST_OPERATION_TEXT + widgetID,
+                    data.datetime + " " + data.amount + "р");
+            editor.putBoolean(MyWidget.WIDGET_LAST_OPERATION_SIGN + widgetID,
+                    data.operationSign);
+            editor.apply();
+
+            MyWidget.updateWidget(this, appWidgetManager, sharedPreference, widgetID);
+        }
+    }
+
+    private int findWidgetIDbyCardNumber(int cardNumber) {
+        int[] ids = appWidgetManager.getAppWidgetIds(
+                new ComponentName(getPackageName(), MyWidget.class.getCanonicalName()));
+        for (int id : ids) {
+            int curCardNumber = sharedPreference.getInt(MyWidget.WIDGET_CARD_NUMBER_TEXT + id, 0);
+            if (curCardNumber != 0 && curCardNumber == cardNumber)
+                return id;
+        }
+        return 0;
     }
 
     @Override
@@ -75,13 +99,24 @@ public class SmsService extends Service {
             SmsData data = new SmsData();
             data.cardNumber = Integer.parseInt(matcher.group(1));
             data.datetime = matcher.group(2);
-            if (matcher.group(3).equals(getString(R.string.oper_plus)))
-                data.amount = Float.parseFloat(matcher.group(4));
-            else if (matcher.group(3).equals(getString(R.string.oper_minus)))
-                data.amount = -Float.parseFloat(matcher.group(4));
+            data.amount = Float.parseFloat(matcher.group(4));
+            if (matcher.group(3).equals(getString(R.string.operation_plus)))
+                data.operationSign = true;
+            else if (matcher.group(3).equals(getString(R.string.operation_minus))) {
+                data.operationSign = false;
+                data.amount = -data.amount;
+            }
             data.balance = Float.parseFloat(matcher.group(5));
             return data;
         }
         return null;
+    }
+
+    static class SmsData {
+        int cardNumber;
+        String datetime;
+        boolean operationSign;
+        float amount;
+        float balance;
     }
 }

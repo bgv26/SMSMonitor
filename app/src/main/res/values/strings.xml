@@ -1,16 +1,15 @@
 <resources>
     <string name="app_name">SMS Monitor</string>
+    <string name="widget_name">SMS Monitor</string>
 
     <string name="no_sms">Ни одной смски</string>
-    <string name="widget_name">SMS Monitor</string>
-    <string name="widget_text">0.00</string>
     <string name="sms_pattern">VISA(\\d{4}) (\\d{2}\\.\\d{2}\\.\\d{2} \\d{2}:\\d{2}) (зачисление|списание)
         ([.\\d]+)р.*Баланс: ([.\\d]+)р
     </string>
     <string name="sms_from">900</string>
     <string name="notification_title">Сбербанк</string>
-    <string name="oper_plus">зачисление</string>
-    <string name="oper_minus">списание</string>
+    <string name="operation_plus">зачисление</string>
+    <string name="operation_minus">списание</string>
     <string name="card_type">VISA</string>
     <string name="card_number_hint">Введите последние четыре цифры карты</string>
 </resources>
