@@ -1,24 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:id="@+id/LinearLayout1"
-              android:layout_width="fill_parent"
-              android:layout_height="fill_parent"
-              android:orientation="vertical"
-              android:padding="10sp" >
-
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/LinearLayout1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="10sp">
     <TextView
             android:id="@+id/smsMessage"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:lines="1"
-            android:scrollHorizontally="true" />
+            android:scrollHorizontally="true"/>
 
     <TextView
             android:id="@+id/smsDate"
-            android:layout_width="fill_parent"
+            android:layout_below="@+id/smsMessage"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="12sp"
-            android:textStyle="italic" />
+            android:textStyle="italic"/>
 
-</LinearLayout>
+    <ImageView
+            android:id="@+id/img_check"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:visibility="gone"
+            android:src="@mipmap/ic_check_grey600_24dp"/>
+</RelativeLayout>

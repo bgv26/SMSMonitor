@@ -25,7 +25,7 @@ public class SmsService extends Service {
     }
 
     private void showNotification(String text) {
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), 0);
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, MainFragment.class), 0);
         Context context = getApplicationContext();
         Notification.Builder builder = new Notification.Builder(context)
                 .setContentTitle(getString(R.string.notification_title))
@@ -100,9 +100,13 @@ public class SmsService extends Service {
             data.cardNumber = Integer.parseInt(matcher.group(1));
             data.datetime = matcher.group(2);
             data.amount = Float.parseFloat(matcher.group(4));
-            if (matcher.group(3).equals(getString(R.string.operation_plus)))
+            if (matcher.group(3).equals(getString(R.string.credit))
+                    || matcher.group(3).equals(getString(R.string.cash)))
                 data.operationSign = true;
-            else if (matcher.group(3).equals(getString(R.string.operation_minus))) {
+            else if (matcher.group(3).equals(getString(R.string.debit))
+                    || matcher.group(3).equals(getString(R.string.cash_disbursement))
+                    || matcher.group(3).equals(getString(R.string.online_bank))
+                    || matcher.group(3).equals(getString(R.string.buy))) {
                 data.operationSign = false;
                 data.amount = -data.amount;
             }

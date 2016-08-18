@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -95,13 +96,34 @@ public class SmsContentProvider extends ContentProvider {
 
     @Override
     public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
-        // в рамках данной статьи этот метод не пригодится...
-        return 0;
+        int uriType = sURIMatcher.match(uri);
+        SQLiteDatabase sqlDB = database.getWritableDatabase();
+        switch (uriType) {
+            case MESSAGES:
+                break;
+            case MESSAGE_ID:
+                String id = uri.getLastPathSegment();
+                if (TextUtils.isEmpty(selection)) {
+                    selection = SmsTable.COLUMN_ID + " = " + id;
+                } else {
+                    selection += " AND" + SmsTable.COLUMN_ID + " = " + id;
+                }
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown URI: " + uri);
+        }
+        int cnt = sqlDB.delete(SmsTable.TABLE_SMS, selection, selectionArgs);
+
+        Context context = getContext();
+        if (context != null) {
+            context.getContentResolver().notifyChange(uri, null);
+        }
+        return cnt;
     }
 
     @Override
     public int update(@NonNull Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        // ...и этот тоже
+        // в рамках данной статьи этот метод не пригодится...
         return 0;
     }
 
