@@ -7,7 +7,6 @@ import android.app.Service;
 import android.appwidget.AppWidgetManager;
 import android.content.*;
 import android.os.IBinder;
-import android.support.annotation.Nullable;
 
 import java.util.Date;
 import java.util.regex.Matcher;
@@ -18,14 +17,13 @@ public class SmsService extends Service {
     private AppWidgetManager appWidgetManager;
     private SharedPreferences sharedPreference;
 
-    @Nullable
     @Override
     public IBinder onBind(Intent intent) {
         return null;
     }
 
     private void showNotification(String text) {
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, MainFragment.class), 0);
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), 0);
         Context context = getApplicationContext();
         Notification.Builder builder = new Notification.Builder(context)
                 .setContentTitle(getString(R.string.notification_title))
