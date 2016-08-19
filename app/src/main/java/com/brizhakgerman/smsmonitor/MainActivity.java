@@ -9,57 +9,37 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Locale;
+import java.util.Set;
 
 public class MainActivity extends ListActivity implements
         LoaderManager.LoaderCallbacks<Cursor> {
-    private static final int MENU_DELETE = 1;
 
     private SimpleCursorAdapter adapter;
-    private long selectedItemId = 0;
-    private static ArrayList<Long> selectedItems = new ArrayList<>();
+    static Set<Long> selectedItemIds = new HashSet<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sms_list);
         fillData();
-        ListView listView = (ListView) findViewById(android.R.id.list);
+        final ListView listView = getListView();
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                ImageView imgCheck = (ImageView) view.findViewById(R.id.img_check);
-                if (imgCheck.getVisibility() == View.GONE) {
-                    selectedItems.add(l);
-                    imgCheck.setVisibility(View.VISIBLE);
-                } else {
-                    selectedItems.remove(l);
-                    imgCheck.setVisibility(View.GONE);
-                }
-                ActionBar actionBar = getActionBar();
-                if (actionBar != null) {
-                    invalidateOptionsMenu();
-                    int totalSelected = selectedItems.size();
-                    String title;
-                    if (totalSelected != 0)
-                        title = String.valueOf(totalSelected);
-                    else
-                        title = getString(R.string.app_name);
-                    actionBar.setTitle(title);
-                }
-                return false;
+                checkItem(view, l);
+                setActionBarTitle();
+                return true;
             }
         });
-//        registerForContextMenu(listView);
     }
 
     @Override
@@ -70,16 +50,18 @@ public class MainActivity extends ListActivity implements
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (selectedItems.size() > 0) {
+        if (selectedItemIds.size() > 0) {
             switch (item.getItemId()) {
                 case R.id.action_delete:
-                    for (long selectedItem: selectedItems) {
+                    for (long selectedItem : selectedItemIds) {
                         Uri messageUri = Uri.parse(SmsContentProvider.CONTENT_URI + "/" + selectedItem);
                         int res = getContentResolver().delete(messageUri, null, null);
                         if (res != 0)
                             getLoaderManager().initLoader(0, null, this);
 
                     }
+                    selectedItemIds.clear();
+                    setActionBarTitle();
                     break;
             }
         }
@@ -89,39 +71,8 @@ public class MainActivity extends ListActivity implements
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         MenuItem itemDelete = menu.findItem(R.id.action_delete);
-        itemDelete.setVisible(selectedItems.size() != 0);
+        itemDelete.setVisible(selectedItemIds.size() != 0);
         return super.onPrepareOptionsMenu(menu);
-    }
-
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        super.onCreateContextMenu(menu, v, menuInfo);
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
-        selectedItemId = info.id;
-
-        menu.setHeaderTitle(String.valueOf(selectedItemId));
-        switch (v.getId()) {
-            case android.R.id.list:
-                menu.add(0, MENU_DELETE, 0, "Delete");
-                break;
-        }
-    }
-
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        if (selectedItemId != 0) {
-            switch (item.getItemId()) {
-                case MENU_DELETE:
-                    Uri messageUri = Uri.parse(SmsContentProvider.CONTENT_URI + "/" + selectedItemId);
-                    int res = getContentResolver().delete(messageUri, null, null);
-                    if (res != 0)
-                        getLoaderManager().initLoader(0, null, this);
-                    break;
-
-            }
-        }
-        return super.onContextItemSelected(item);
-
     }
 
     private void fillData() {
@@ -129,7 +80,7 @@ public class MainActivity extends ListActivity implements
         int[] to = new int[]{R.id.smsDate, R.id.smsMessage};
 
         getLoaderManager().initLoader(0, null, this);
-        adapter = new SimpleCursorAdapter(this, R.layout.sms_row, null, from,
+        adapter = new CheckableSimpleCursorAdapter(this, R.layout.sms_row, null, from,
                 to, 0);
 
         adapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
@@ -185,5 +136,33 @@ public class MainActivity extends ListActivity implements
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         adapter.swapCursor(null);
+    }
+
+    private void checkItem(View view, long id) {
+        ImageView imgCheck = (ImageView) view.findViewById(R.id.img_check);
+
+        if (!selectedItemIds.contains(id)) {
+            selectedItemIds.add(id);
+            imgCheck.setVisibility(View.VISIBLE);
+        } else {
+            selectedItemIds.remove(id);
+            imgCheck.setVisibility(View.GONE);
+        }
+    }
+
+    private void setActionBarTitle() {
+        ActionBar actionBar = getActionBar();
+        if (actionBar != null) {
+            int totalSelected = selectedItemIds.size();
+            String title;
+            if (totalSelected != 0) {
+                title = String.valueOf(totalSelected);
+            } else {
+                title = getString(R.string.app_name);
+            }
+            actionBar.setTitle(title);
+            invalidateOptionsMenu();
+//            Toast.makeText(getApplicationContext(), String.valueOf(selectedItemIds), Toast.LENGTH_LONG).show();
+        }
     }
 }
