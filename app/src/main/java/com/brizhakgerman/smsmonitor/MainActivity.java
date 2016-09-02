@@ -19,14 +19,13 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Locale;
-import java.util.Set;
 
 public class MainActivity extends ListActivity implements
         LoaderManager.LoaderCallbacks<Cursor> {
 
     private boolean isFiltered = false;
     private SimpleCursorAdapter adapter;
-    private static Set<Long> selectedItemIds = new HashSet<>();
+    private static HashSet<Long> selectedItems = new HashSet<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -55,15 +54,13 @@ public class MainActivity extends ListActivity implements
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_delete:
-                for (long selectedItem : selectedItemIds) {
+                for (long selectedItem : selectedItems) {
                     Uri messageUri = Uri.parse(SmsContentProvider.CONTENT_URI + "/" + selectedItem);
-                    int res = getContentResolver().delete(messageUri, null, null);
-                    if (res != 0)
-                        getLoaderManager().initLoader(0, null, this);
-
+                    getContentResolver().delete(messageUri, null, null);
                 }
-                selectedItemIds.clear();
+                selectedItems.clear();
                 setActionBarTitle();
+                getLoaderManager().restartLoader(0, null, this);
                 break;
             case R.id.action_filter:
                 FilterDialog dialog = new FilterDialog();
@@ -81,7 +78,7 @@ public class MainActivity extends ListActivity implements
         MenuItem itemDelete = menu.findItem(R.id.action_delete);
         MenuItem itemFilter = menu.findItem(R.id.action_filter);
         MenuItem itemClearFilter = menu.findItem(R.id.action_clear_filter);
-        boolean isSelected = selectedItemIds.size() != 0;
+        boolean isSelected = selectedItems.size() != 0;
         itemDelete.setVisible(isSelected);
         itemClearFilter.setVisible(!isSelected && isFiltered);
         itemFilter.setVisible(!isSelected && !isFiltered);
@@ -89,8 +86,8 @@ public class MainActivity extends ListActivity implements
     }
 
     private void fillData() {
-        String[] from = new String[]{SmsTable.COLUMN_DATE, SmsTable.COLUMN_TEXT};
-        int[] to = new int[]{R.id.smsDate, R.id.smsMessage};
+        String[] from = new String[]{SmsTable.COLUMN_ID, SmsTable.COLUMN_DATE, SmsTable.COLUMN_TEXT};
+        int[] to = new int[]{R.id.img_check, R.id.smsDate, R.id.smsMessage};
 
         getLoaderManager().initLoader(0, null, this);
         adapter = new SimpleCursorAdapter(this, R.layout.sms_row, null, from,
@@ -106,11 +103,7 @@ public class MainActivity extends ListActivity implements
                     return true;
                 }
                 if (columnIndex == cursor.getColumnIndex(SmsTable.COLUMN_ID)) {
-                    ImageView imgCheck = (ImageView) view.findViewById(R.id.img_check);
-                    if (selectedItemIds.contains(cursor.getLong(columnIndex)))
-                        imgCheck.setVisibility(View.VISIBLE);
-                    else
-                        imgCheck.setVisibility(View.GONE);
+                    toggleVisibility(view, cursor.getLong(columnIndex));
                     return true;
                 }
                 return false;
@@ -161,21 +154,24 @@ public class MainActivity extends ListActivity implements
     }
 
     private void checkItem(View view, long id) {
-        ImageView imgCheck = (ImageView) view.findViewById(R.id.img_check);
-
-        if (!selectedItemIds.contains(id)) {
-            selectedItemIds.add(id);
-            imgCheck.setVisibility(View.VISIBLE);
+        if (!selectedItems.contains(id)) {
+            selectedItems.add(id);
         } else {
-            selectedItemIds.remove(id);
-            imgCheck.setVisibility(View.GONE);
+            selectedItems.remove(id);
         }
+
+        ImageView imgCheck = (ImageView) view.findViewById(R.id.img_check);
+        toggleVisibility(imgCheck, id);
+    }
+
+    private void toggleVisibility(View view, long id) {
+        view.setVisibility((selectedItems.contains(id)) ? View.VISIBLE : View.GONE);
     }
 
     private void setActionBarTitle() {
         ActionBar actionBar = getActionBar();
         if (actionBar != null) {
-            int totalSelected = selectedItemIds.size();
+            int totalSelected = selectedItems.size();
             String title;
             if (totalSelected != 0) {
                 title = String.valueOf(totalSelected);
@@ -219,9 +215,9 @@ public class MainActivity extends ListActivity implements
                 sb.append(" AND ");
             }
 
-                sb.append(SmsTable.COLUMN_OPERATION_DATE);
-                sb.append(" <= ");
-                sb.append(dateEnd);
+            sb.append(SmsTable.COLUMN_OPERATION_DATE);
+            sb.append(" <= ");
+            sb.append(dateEnd);
         }
 
         if (cardNumber != null) {
