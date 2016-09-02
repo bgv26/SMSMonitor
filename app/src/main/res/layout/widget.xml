@@ -5,7 +5,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:background="@drawable/border_rounded">
+        android:background="@drawable/widget_border">
 
     <TextView
             android:id="@+id/tvCardNumber"
@@ -13,7 +13,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="start|center_vertical"
-            android:drawableStart="@mipmap/visa"
+            android:drawableStart="@mipmap/widget_visa"
             android:drawableEnd="@mipmap/widget_settings"
             android:drawablePadding="5dp"
             android:textSize="12sp"/>

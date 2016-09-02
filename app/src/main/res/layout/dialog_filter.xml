@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+        <CheckBox
+                android:id="@+id/chbPeriod"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/dialog_filter_period_title"/>
+
+        <TableLayout
+                android:id="@+id/llPeriod"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone">
+            <TableRow
+                    android:layout_marginStart="5dp">
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="5dp"
+                        android:text="@string/dialog_filter_period_start"
+                        android:labelFor="@+id/dateStart"/>
+                <EditText
+                        android:id="@+id/dateStart"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:inputType="date"
+                        android:hint="@string/dialog_filter_period_start_hint"/>
+                <ImageButton
+                        android:id="@+id/btnDateStart"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="@string/dialog_filter_period_start_button"
+                        android:src="@mipmap/calendar"/>
+            </TableRow>
+
+            <TableRow
+                    android:layout_marginStart="5dp">
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="5dp"
+                        android:text="@string/dialog_filter_period_end"
+                        android:labelFor="@+id/dateEnd"/>
+                <EditText
+                        android:id="@+id/dateEnd"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:inputType="date"
+                        android:hint="@string/dialog_filter_period_end_hint"/>
+                <ImageButton
+                        android:id="@+id/btnDateEnd"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="@string/dialog_filter_period_end_button"
+                        android:src="@mipmap/calendar"/>
+            </TableRow>
+        </TableLayout>
+
+        <CheckBox
+                android:id="@+id/chbCardNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/dialog_filter_card_number_title"/>
+
+        <Spinner
+                android:id="@+id/lvCardNumber"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"/>
+
+        <CheckBox
+                android:id="@+id/chbText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/dialog_filter_text_title"
+                android:labelFor="@+id/etText"/>
+
+        <EditText
+                android:id="@+id/etText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:visibility="gone"/>
+
+        <Button
+                android:id="@+id/btnOk"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/dialog_filter_button_ok"/>
+
+    </LinearLayout>
+</ScrollView>

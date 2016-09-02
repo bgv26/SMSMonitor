@@ -4,6 +4,36 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+    <RadioGroup
+            android:id="@+id/rgCardSystem"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:padding="5dp"
+            android:orientation="horizontal">
+        <RadioButton
+                android:id="@+id/rbVisa"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:background="@drawable/radio_visa"
+                android:button="@android:color/transparent"
+                android:checked="true"/>
+        <RadioButton
+                android:id="@+id/rbMasterCard"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:background="@drawable/radio_mastercard"
+                android:button="@android:color/transparent"/>
+        <RadioButton
+                android:id="@+id/rbMaestro"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:background="@drawable/radio_maestro"
+                android:button="@android:color/transparent"/>
+    </RadioGroup>
     <EditText
             android:id="@+id/etCardNumber"
             android:layout_width="wrap_content"
