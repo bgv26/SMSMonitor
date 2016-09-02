@@ -8,14 +8,13 @@
             android:id="@+id/etCardNumber"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="@string/card_number_hint"
+            android:hint="@string/config_widget_card_number_hint"
             android:inputType="number"/>
 
     <Button
             android:id="@+id/btnOk"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="onClick"
             android:text="@android:string/ok"/>
 
 </LinearLayout>

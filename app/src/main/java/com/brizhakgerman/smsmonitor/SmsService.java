@@ -8,7 +8,6 @@ import android.appwidget.AppWidgetManager;
 import android.content.*;
 import android.os.IBinder;
 
-import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -29,37 +28,37 @@ public class SmsService extends Service {
                 .setContentTitle(getString(R.string.notification_title))
                 .setContentText(text)
                 .setContentIntent(contentIntent)
-                .setSmallIcon(R.mipmap.ic_launcher)
+                .setSmallIcon(R.mipmap.credit_cards)
                 .setAutoCancel(true);
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         Notification notification = builder.build();
-        notificationManager.notify(R.mipmap.ic_launcher, notification);
+        notificationManager.notify(R.mipmap.credit_cards, notification);
     }
 
     private void updateWidget(SmsData data) {
         appWidgetManager = AppWidgetManager.getInstance(this);
-        sharedPreference = getSharedPreferences(MyWidget.WIDGET_PREF, MODE_PRIVATE);
+        sharedPreference = getSharedPreferences(SmsMonitorWidget.WIDGET_PREF, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreference.edit();
         int widgetID = findWidgetIDbyCardNumber(data.cardNumber);
         if (widgetID != 0) {
-            editor.putString(MyWidget.WIDGET_BALANCE_TEXT + widgetID,
+            editor.putString(SmsMonitorWidget.WIDGET_BALANCE_TEXT + widgetID,
                     data.balance + "р");
-            editor.putString(MyWidget.WIDGET_LAST_OPERATION_TEXT + widgetID,
+            editor.putString(SmsMonitorWidget.WIDGET_LAST_OPERATION_TEXT + widgetID,
                     data.datetime + " " + data.amount + "р");
-            editor.putBoolean(MyWidget.WIDGET_LAST_OPERATION_SIGN + widgetID,
+            editor.putBoolean(SmsMonitorWidget.WIDGET_LAST_OPERATION_SIGN + widgetID,
                     data.operationSign);
             editor.apply();
 
-            MyWidget.updateWidget(this, appWidgetManager, sharedPreference, widgetID);
+            SmsMonitorWidget.updateWidget(this, appWidgetManager, sharedPreference, widgetID);
         }
     }
 
-    private int findWidgetIDbyCardNumber(int cardNumber) {
+    private int findWidgetIDbyCardNumber(String cardNumber) {
         int[] ids = appWidgetManager.getAppWidgetIds(
-                new ComponentName(getPackageName(), MyWidget.class.getCanonicalName()));
+                new ComponentName(getPackageName(), SmsMonitorWidget.class.getCanonicalName()));
         for (int id : ids) {
-            int curCardNumber = sharedPreference.getInt(MyWidget.WIDGET_CARD_NUMBER_TEXT + id, 0);
-            if (curCardNumber != 0 && curCardNumber == cardNumber)
+            String curCardNumber = sharedPreference.getString(SmsMonitorWidget.WIDGET_CARD_NUMBER_TEXT + id, "0000");
+            if (curCardNumber.equals(cardNumber))
                 return id;
         }
         return 0;
@@ -69,23 +68,26 @@ public class SmsService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         String sms_body = intent.getExtras().getString(SmsMonitor.SMS_BODY);
         showNotification(sms_body);
-        saveSms(sms_body);
 
         SmsData event = processSms(sms_body);
         if (event != null) {
             updateWidget(event);
         }
 
+        saveSms(sms_body, event);
+
         return START_STICKY;
     }
 
-    private void saveSms(String sms_body) {
-        Date now = new Date();
-        long now_long = now.getTime();
-
+    private void saveSms(String sms_body, SmsData data) {
         ContentValues values = new ContentValues();
-        values.put(SmsTable.COLUMN_DATE, now_long);
+        values.put(SmsTable.COLUMN_DATE, (new SimpleDate()).toLong());
         values.put(SmsTable.COLUMN_TEXT, sms_body);
+
+        if (data != null) {
+            values.put(SmsTable.COLUMN_OPERATION_DATE, (new SimpleDate(data.datetime)).toLong());
+            values.put(SmsTable.COLUMN_CARD_NUMBER, data.cardNumber);
+        }
 
         getContentResolver().insert(SmsContentProvider.CONTENT_URI, values);
     }
@@ -95,7 +97,7 @@ public class SmsService extends Service {
         Matcher matcher = pattern.matcher(sms_body);
         if (matcher.matches()) {
             SmsData data = new SmsData();
-            data.cardNumber = Integer.parseInt(matcher.group(1));
+            data.cardNumber = matcher.group(1);
             data.datetime = matcher.group(2);
             data.amount = Float.parseFloat(matcher.group(4));
             if (matcher.group(3).equals(getString(R.string.credit))
@@ -115,7 +117,7 @@ public class SmsService extends Service {
     }
 
     static class SmsData {
-        int cardNumber;
+        String cardNumber;
         String datetime;
         boolean operationSign;
         float amount;

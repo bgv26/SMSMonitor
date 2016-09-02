@@ -5,10 +5,27 @@
     <string name="action_delete_text">Delete</string>
     <string name="action_mark_item">Mark</string>
 
+    <string name="menu_item_filter_title">Filter</string>
+    <string name="menu_item_clear_filter_title">Clear filter</string>
+
+    <string name="dialog_filter_title">Фильтр</string>
+    <string name="dialog_filter_period_title">Период</string>
+    <string name="dialog_filter_period_start">с</string>
+    <string name="dialog_filter_period_start_hint">Начало периода</string>
+    <string name="dialog_filter_period_start_button">Начало периода</string>
+    <string name="dialog_filter_period_end">по</string>
+    <string name="dialog_filter_period_end_hint">Окончание периода</string>
+    <string name="dialog_filter_period_end_button">Окончание периода</string>
+    <string name="dialog_filter_card_number_title">Номер карты</string>
+    <string name="dialog_filter_text_title">Текст</string>
+    <string name="dialog_filter_button_ok">OK</string>
+    <string name="dialog_filter_datepickerdialog_title">Укажите дату</string>
+
     <string name="no_sms">Ни одной смски</string>
     <string name="sms_pattern">VISA(\\d{4}) (\\d{2}\\.\\d{2}\\.\\d{2}(?: \\d{2}:\\d{2})?) (зачисление|внесение
         наличных|списание|покупка|выдача наличных|оплата Мобильного банка).* ([.\\d]+)р.* Баланс: ([.\\d]+)р
     </string>
+
     <string name="sms_from">900</string>
     <string name="notification_title">Сбербанк</string>
     <string name="credit">зачисление</string>
@@ -17,6 +34,6 @@
     <string name="cash_disbursement">выдача наличных</string>
     <string name="online_bank">оплата Мобильного банка</string>
     <string name="buy">покупка</string>
-    <string name="card_type">VISA</string>
-    <string name="card_number_hint">Введите последние четыре цифры карты</string>
+    <string name="config_widget_card_number_hint">Введите последние четыре цифры карты</string>
+
 </resources>

@@ -1,24 +1,21 @@
 package com.brizhakgerman.smsmonitor;
 
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.widget.RemoteViews;
 
-public class MyWidget extends AppWidgetProvider {
+public class SmsMonitorWidget extends AppWidgetProvider {
 
-    final static String WIDGET_PREF = "widget_pref";
+    final static String WIDGET_PREF = "sms_monitor_widget_pref";
     final static String WIDGET_CARD_NUMBER_TEXT = "widget_card_number_text_";
     final static String WIDGET_BALANCE_TEXT = "widget_balance_text_";
     final static String WIDGET_LAST_OPERATION_TEXT = "widget_last_operation_text_";
     final static String WIDGET_LAST_OPERATION_SIGN = "widget_last_operation_sign_";
-
-    @Override
-    public void onEnabled(Context context) {
-        super.onEnabled(context);
-    }
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
@@ -42,20 +39,10 @@ public class MyWidget extends AppWidgetProvider {
         editor.apply();
     }
 
-    @Override
-    public void onDisabled(Context context) {
-        super.onDisabled(context);
-    }
-
     static void updateWidget(Context context, AppWidgetManager appWidgetManager,
                              SharedPreferences sharedPreferences, int appWidgetId) {
 
-        String cardNumber = context.getString(R.string.card_type) + "***";
-        int iCardNumber = sharedPreferences.getInt(WIDGET_CARD_NUMBER_TEXT + appWidgetId, 0);
-        if (iCardNumber == 0)
-            cardNumber += "0000";
-        else
-            cardNumber += iCardNumber;
+        String cardNumber = sharedPreferences.getString(WIDGET_CARD_NUMBER_TEXT + appWidgetId, "0000");
 
         String balance = "Баланс: " + sharedPreferences.getString(WIDGET_BALANCE_TEXT + appWidgetId, "0р");
 
@@ -73,6 +60,17 @@ public class MyWidget extends AppWidgetProvider {
             widgetView.setInt(R.id.tvLastOperation, "setTextColor", Color.BLUE);
         else
             widgetView.setInt(R.id.tvLastOperation, "setTextColor", Color.RED);
+
+        Intent configIntent = new Intent(context, ConfigWidgetActivity.class);
+        configIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_CONFIGURE);
+        configIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+        PendingIntent configPendingIntent = PendingIntent.getActivity(context, appWidgetId, configIntent, 0);
+        widgetView.setOnClickPendingIntent(R.id.tvCardNumber, configPendingIntent);
+
+        Intent mainIntent = new Intent(context, MainActivity.class);
+        PendingIntent mainPendingIntent = PendingIntent.getActivity(context, 0, mainIntent, 0);
+        widgetView.setOnClickPendingIntent(R.id.widgetBody, mainPendingIntent);
+
         appWidgetManager.updateAppWidget(appWidgetId, widgetView);
     }
 }

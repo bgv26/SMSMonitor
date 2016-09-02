@@ -1,17 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/widgetBody"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:background="#2200ff00">
+        android:background="@drawable/border_rounded">
 
     <TextView
             android:id="@+id/tvCardNumber"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="start"/>
+            android:gravity="start|center_vertical"
+            android:drawableStart="@mipmap/visa"
+            android:drawableEnd="@mipmap/widget_settings"
+            android:drawablePadding="5dp"
+            android:textSize="12sp"/>
 
     <TextView
             android:id="@+id/tvBalance"
@@ -19,13 +24,13 @@
             android:layout_height="wrap_content"
             android:layout_weight="3"
             android:gravity="center_horizontal"
-            android:textColor="#000"
             android:textSize="18sp"/>
     <TextView
             android:id="@+id/tvLastOperation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="end"/>
+            android:gravity="end"
+            android:textSize="12sp"/>
 
 </LinearLayout>

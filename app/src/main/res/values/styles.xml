@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="android:Theme.Holo.Light.DarkActionBar">
-    </style>
+    <style name="AppTheme" parent="android:Theme.Holo.Light.DarkActionBar"/>
+    <style name="AppTheme.Filter" parent="android:Theme.Holo.Light.Dialog"/>
 
 </resources>

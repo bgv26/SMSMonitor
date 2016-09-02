@@ -4,5 +4,5 @@
                     android:minHeight="40dp"
                     android:minWidth="110dp"
                     android:updatePeriodMillis="2400000"
-                    android:configure="com.brizhakgerman.smsmonitor.ConfigActivity">
+                    android:configure="com.brizhakgerman.smsmonitor.ConfigWidgetActivity">
 </appwidget-provider>
