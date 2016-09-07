@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.appwidget.AppWidgetManager;
 import android.content.*;
+import android.os.Build;
 import android.os.IBinder;
 
 import java.util.regex.Matcher;
@@ -67,7 +68,9 @@ public class SmsService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         String sms_body = intent.getExtras().getString(SmsMonitor.SMS_BODY);
-        showNotification(sms_body);
+        if (Build.VERSION.SDK_INT < 19) {
+            showNotification(sms_body);
+        }
 
         SmsData event = processSms(sms_body);
         if (event != null) {
