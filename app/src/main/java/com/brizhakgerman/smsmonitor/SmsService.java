@@ -42,8 +42,9 @@ public class SmsService extends Service {
         SharedPreferences.Editor editor = sharedPreference.edit();
         int widgetID = findWidgetIDbyCardNumber(data.cardNumber);
         if (widgetID != 0) {
+            int creditLimit = sharedPreference.getInt(SmsMonitorWidget.WIDGET_CARD_CREDIT_INT + widgetID, 0);
             editor.putString(SmsMonitorWidget.WIDGET_BALANCE_TEXT + widgetID,
-                    data.balance + "р");
+                    (data.balance - creditLimit) + "р");
             editor.putString(SmsMonitorWidget.WIDGET_LAST_OPERATION_TEXT + widgetID,
                     data.datetime + " " + data.amount + "р");
             editor.putBoolean(SmsMonitorWidget.WIDGET_LAST_OPERATION_SIGN + widgetID,

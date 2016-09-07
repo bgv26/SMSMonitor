@@ -34,12 +34,31 @@
                 android:background="@drawable/radio_maestro"
                 android:button="@android:color/transparent"/>
     </RadioGroup>
+
     <EditText
             android:id="@+id/etCardNumber"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:padding="5dp"
             android:hint="@string/config_widget_card_number_hint"
             android:inputType="number"/>
+
+    <CheckBox
+            android:id="@+id/chbCredit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:text="@string/config_widget_card_type"/>
+
+
+    <EditText
+            android:id="@+id/etCreditSum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:hint="@string/config_widget_credit_limit_hint"
+            android:inputType="number"
+            android:visibility="gone"/>
 
     <Button
             android:id="@+id/btnOk"

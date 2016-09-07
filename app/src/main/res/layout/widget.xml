@@ -7,29 +7,61 @@
         android:orientation="vertical"
         android:background="@drawable/widget_border">
 
-    <TextView
-            android:id="@+id/tvCardNumber"
+    <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="start|center_vertical"
-            android:drawableStart="@mipmap/widget_visa"
-            android:drawableEnd="@mipmap/widget_settings"
-            android:drawablePadding="5dp"
-            android:textSize="12sp"/>
+            android:layout_height="wrap_content">
+        <ImageView
+                android:id="@+id/ivPaySystem"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd ="5dp"
+                android:src="@mipmap/widget_visa"
+                android:contentDescription="@string/widget_pay_system"/>
+
+        <TextView
+                android:id="@+id/tvCardNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/ivPaySystem"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="5dp"
+                android:textSize="12sp"/>
+
+        <ImageView
+                android:id="@+id/ivWidgetSettings"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="5dp"
+                android:src="@mipmap/widget_settings"
+                android:contentDescription="@string/widget_settings"/>
+
+        <TextView
+                android:id="@+id/tvLimit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/tvCardNumber"
+                android:layout_toStartOf="@id/ivWidgetSettings"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="5dp"
+                android:textSize="12sp"/>
+
+    </RelativeLayout>
 
     <TextView
             android:id="@+id/tvBalance"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="3"
             android:gravity="center_horizontal"
-            android:textSize="18sp"/>
+            android:textSize="16sp"/>
+
     <TextView
             android:id="@+id/tvLastOperation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:gravity="end"
             android:textSize="12sp"/>
 

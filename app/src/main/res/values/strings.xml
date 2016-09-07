@@ -36,5 +36,10 @@
     <string name="online_bank">оплата Мобильного банка</string>
     <string name="buy">покупка</string>
     <string name="config_widget_card_number_hint">Введите последние четыре цифры карты</string>
+    <string name="config_widget_credit_limit_hint">Кредитный лимит</string>
+    <string name="config_widget_card_type">Кредитная</string>
+
+    <string name="widget_pay_system">Card Pay System</string>
+    <string name="widget_settings">Settings</string>
 
 </resources>
