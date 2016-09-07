@@ -13,7 +13,6 @@ public class ConfigWidgetActivity extends Activity implements View.OnClickListen
     private int widgetID = AppWidgetManager.INVALID_APPWIDGET_ID;
     private Intent resultValue;
     private EditText etCardNumber, etCreditSum;
-    private RadioGroup rgCardSystem;
     private CheckBox chbCredit;
     private SharedPreferences sharedPreferences;
 
@@ -39,7 +38,7 @@ public class ConfigWidgetActivity extends Activity implements View.OnClickListen
 
         etCardNumber = (EditText) findViewById(R.id.etCardNumber);
 
-        rgCardSystem = (RadioGroup) findViewById(R.id.rgCardSystem);
+        RadioGroup rgCardSystem = (RadioGroup) findViewById(R.id.rgCardSystem);
         rgCardSystem.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
