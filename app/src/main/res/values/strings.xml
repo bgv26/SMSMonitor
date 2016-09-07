@@ -2,11 +2,12 @@
     <string name="app_name">SMS Monitor</string>
     <string name="widget_name">SMS Monitor</string>
 
-    <string name="action_delete_text">Delete</string>
     <string name="action_mark_item">Mark</string>
 
+    <string name="menu_item_delete_title">Delete</string>
     <string name="menu_item_filter_title">Filter</string>
     <string name="menu_item_clear_filter_title">Clear filter</string>
+    <string name="menu_item_inbox_title">Open inbox</string>
 
     <string name="dialog_filter_title">Фильтр</string>
     <string name="dialog_filter_period_title">Период</string>

@@ -5,10 +5,13 @@ import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Telephony;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -68,6 +71,34 @@ public class MainActivity extends ListActivity implements
                 break;
             case R.id.action_clear_filter:
                 setFilters(null, false);
+                break;
+            case R.id.action_inbox:
+                if (Build.VERSION.SDK_INT >= 19) {
+                    Cursor cursor = this.getContentResolver().query(Telephony.Sms.Inbox.CONTENT_URI,
+                            new String[]{Telephony.Sms._ID, Telephony.Sms.THREAD_ID},
+                            String.format(Locale.getDefault(), "%s = ?", Telephony.Sms.ADDRESS),
+                            new String[]{"900"},
+                            Telephony.Sms.DEFAULT_SORT_ORDER);
+
+                    int count;
+                    if (cursor != null) {
+                        count = cursor.getCount();
+
+                        long threadId = 0;
+                        if (cursor.moveToFirst()) {
+                            for (int i = 0; i < count; i++) {
+                                threadId = cursor.getLong(cursor.getColumnIndex(Telephony.Sms.THREAD_ID));
+                                cursor.moveToNext();
+                            }
+                        }
+                        cursor.close();
+                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                        intent.setData(Uri.parse(
+                                String.format(Locale.getDefault(),
+                                        "%s/%d", Telephony.MmsSms.CONTENT_CONVERSATIONS_URI, threadId)));
+                        startActivity(intent);
+                    }
+                }
                 break;
         }
         return super.onOptionsItemSelected(item);
