@@ -130,7 +130,8 @@ public class SmsContentProvider extends ContentProvider {
         String[] available = {
                 SmsTable.COLUMN_DATE,
                 SmsTable.COLUMN_TEXT,
-                SmsTable.COLUMN_ID
+                SmsTable.COLUMN_ID,
+                SmsTable.COLUMN_OPERATION_SIGN
         };
         if (projection != null) {
             HashSet<String> requestedColumns = new HashSet<>(Arrays.asList(projection));

@@ -3,6 +3,7 @@
     <string name="widget_name">SMS Monitor</string>
 
     <string name="action_mark_item">Mark</string>
+    <string name="operation_sign">Operation Sign</string>
 
     <string name="menu_item_delete_title">Delete</string>
     <string name="menu_item_filter_title">Filter</string>

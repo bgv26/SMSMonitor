@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 class SmsDatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "sms_table.db";
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 1;
 
     SmsDatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);

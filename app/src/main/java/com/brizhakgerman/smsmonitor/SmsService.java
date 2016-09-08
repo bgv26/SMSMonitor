@@ -91,6 +91,11 @@ public class SmsService extends Service {
         if (data != null) {
             values.put(SmsTable.COLUMN_OPERATION_DATE, (new SimpleDate(data.datetime)).toLong());
             values.put(SmsTable.COLUMN_CARD_NUMBER, data.cardNumber);
+            if (data.operationSign) {
+                values.put(SmsTable.COLUMN_OPERATION_SIGN, 1);
+            } else {
+                values.put(SmsTable.COLUMN_OPERATION_SIGN, 0);
+            }
         }
 
         getContentResolver().insert(SmsContentProvider.CONTENT_URI, values);

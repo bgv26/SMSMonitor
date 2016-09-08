@@ -117,8 +117,18 @@ public class MainActivity extends ListActivity implements
     }
 
     private void fillData() {
-        String[] from = new String[]{SmsTable.COLUMN_ID, SmsTable.COLUMN_DATE, SmsTable.COLUMN_TEXT};
-        int[] to = new int[]{R.id.img_check, R.id.smsDate, R.id.smsMessage};
+        String[] from = new String[]{
+                SmsTable.COLUMN_ID,
+                SmsTable.COLUMN_DATE,
+                SmsTable.COLUMN_TEXT,
+                SmsTable.COLUMN_OPERATION_SIGN
+        };
+        int[] to = new int[]{
+                R.id.img_check,
+                R.id.smsDate,
+                R.id.smsMessage,
+                R.id.ivSign
+        };
 
         getLoaderManager().initLoader(0, null, this);
         adapter = new SimpleCursorAdapter(this, R.layout.sms_row, null, from,
@@ -136,6 +146,22 @@ public class MainActivity extends ListActivity implements
                 if (columnIndex == cursor.getColumnIndex(SmsTable.COLUMN_ID)) {
                     toggleVisibility(view, cursor.getLong(columnIndex));
                     return true;
+                }
+                if (columnIndex == cursor.getColumnIndex(SmsTable.COLUMN_OPERATION_SIGN)) {
+                    try {
+                        int iSign = cursor.getInt(columnIndex);
+                        switch (iSign) {
+                            case 0:
+                                ((ImageView) view).setImageResource(R.mipmap.minus);
+                                break;
+                            case 1:
+                                ((ImageView) view).setImageResource(R.mipmap.plus);
+                                break;
+                        }
+                        return true;
+                    } catch (Exception e) {
+                        view.setVisibility(View.INVISIBLE);
+                    }
                 }
                 return false;
             }
@@ -168,7 +194,12 @@ public class MainActivity extends ListActivity implements
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        String[] projection = {SmsTable.COLUMN_ID, SmsTable.COLUMN_DATE, SmsTable.COLUMN_TEXT};
+        String[] projection = {
+                SmsTable.COLUMN_ID,
+                SmsTable.COLUMN_DATE,
+                SmsTable.COLUMN_TEXT,
+                SmsTable.COLUMN_OPERATION_SIGN
+        };
         String selection = constructSelection(args);
         return new CursorLoader(this, SmsContentProvider.CONTENT_URI,
                 projection, selection, null, "-" + SmsTable.COLUMN_DATE);
